@@ -1,11 +1,8 @@
 package main
 
 import (
+	"log"
   "net/http"
-
-	"github.com/go-chi/chi/v5"
-	"github.com/go-chi/render"
-
 )
 
 type TestResponse struct {
@@ -13,10 +10,11 @@ type TestResponse struct {
 }
 
 func main() {
-  r := chi.NewRouter()
-	r.Get("/health", func(w http.ResponseWriter, r *http.Request){
-		body := TestResponse{Status: "ok"}
-		render.JSON(w, r, body)
-	})
-	http.ListenAndServe(":3000", r)
+  mux := http.NewServeMux()
+	h1 := func(w http.ResponseWriter, _ *http.Request) {
+		log.Print("Hello World!")
+	}
+	mux.HandleFunc("/health", h1)
+	log.Print("listening...")
+	http.ListenAndServe(":8080", mux)
 }
